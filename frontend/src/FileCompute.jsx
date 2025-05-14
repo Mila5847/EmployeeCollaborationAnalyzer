@@ -49,8 +49,6 @@ function FileCompute() {
         setProcessed(false);
         setLoading(true);
 
-        console.log("Starting file upload...");
-
         try {
             const form = new FormData();
             form.append('file', file);
@@ -67,8 +65,8 @@ function FileCompute() {
                 const errorMessages = data.errors.map((error, index) => 
                     `Error in record [${error.record}]: ${error.message}`
                 ).join('\n');
-                setError(errorMessages); // Update error state
-                return; // Early return to stop further processing
+                setError(errorMessages);
+                return;
             }
 
             // Process successful response
