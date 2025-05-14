@@ -1,0 +1,42 @@
+name: build
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{github.workflow}}-${{github.event_name}}-${{github.ref}}
+  cancel-in-progress: true
+
+jobs:
+  test-and-build:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run build & test
+        run: |
+          npm run build
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
